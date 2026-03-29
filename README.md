@@ -36,3 +36,4 @@ A aplicação utiliza SQLite com duas tabelas principais:
 1. Instalar dependências:
    ```bash
    flutter pub get
+2. Instalar o Android Studio: pixel 7
