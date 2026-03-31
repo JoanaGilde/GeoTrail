@@ -21,7 +21,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _createDB,
     );
   }
@@ -87,6 +87,17 @@ class DatabaseHelper {
         FOREIGN KEY (id_utilizador) REFERENCES utilizador(id_utilizador)
       );
     ''');
+
+    await db.execute('''
+      CREATE TABLE pontos_rota (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        caminhada_id INTEGER,
+        latitude REAL,
+        longitude REAL,
+        timestamp TEXT,
+        FOREIGN KEY (caminhada_id) REFERENCES caminhadas(id)
+      )
+    ''');
   }
 
   // ---------------- FAVORITOS ----------------
@@ -108,14 +119,31 @@ class DatabaseHelper {
 
   // ---------------- CAMINHADAS ----------------
 
-Future<int> insertCaminhada(Map<String, dynamic> row) async {
-  final db = await instance.database;
-  return await db.insert('caminhada', row);
-}
+  Future<int> insertCaminhada(Map<String, dynamic> row) async {
+    final db = await instance.database;
+    return await db.insert('caminhada', row);
+  }
 
-Future<List<Map<String, dynamic>>> getCaminhadas() async {
-  final db = await instance.database;
-  return await db.query('caminhada');
+  Future<List<Map<String, dynamic>>> getCaminhadas() async {
+    final db = await instance.database;
+    return await db.query('caminhada');
+  }
+
+  // ---------------- ROTAS ----------------
+
+  Future<int> insertPontoRota(Map<String, dynamic> ponto) async {
+    final db = await database;
+    return await db.insert('pontos_rota', ponto);
+  }
+  // permite-te reconstruir a rota para desenhar no mapa mais tarde
+  Future<List<Map<String, dynamic>>> getRotaByCaminhada(int caminhadaId) async {
+  final db = await database;
+  return await db.query(
+    'pontos_rota',
+    where: 'id_caminhada = ?',
+    whereArgs: [caminhadaId],
+    orderBy: 'timestamp ASC',
+  );
 }
 
 
