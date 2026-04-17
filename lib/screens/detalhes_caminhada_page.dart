@@ -55,7 +55,6 @@ String _formatarDuracao(dynamic segundos) {
   @override
   Widget build(BuildContext context) {
     final c = widget.caminhada;
-    final accent = Theme.of(context).colorScheme.primary;
     final LatLng? centro = _rota.isNotEmpty ? _rota[_rota.length ~/ 2] : null;
 
     return Scaffold(
@@ -89,7 +88,7 @@ String _formatarDuracao(dynamic segundos) {
                         onMapCreated: (controller) {
                             _mapController = controller;
                             if (_rota.isNotEmpty) {
-                                  final bounds = _criarBounds(_rota);
+                                  final bounds = _calcularBounds(_rota);
                                   controller.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
                             }
                           },
@@ -108,18 +107,6 @@ String _formatarDuracao(dynamic segundos) {
                         zoomControlsEnabled: false,
                         mapToolbarEnabled: false,
                         myLocationButtonEnabled: false,
-                        polylines: _rota.length > 1
-                            ? {
-                                Polyline(
-                                  polylineId: const PolylineId('rota_gravada'),
-                                  points: _rota,
-                                  color: accent,
-                                  width: 5,
-                                  startCap: Cap.roundCap,
-                                  endCap: Cap.roundCap,
-                                ),
-                              }
-                            : {},
                         markers: {
                           if (_rota.isNotEmpty)
                             Marker(
@@ -137,16 +124,6 @@ String _formatarDuracao(dynamic segundos) {
                                   BitmapDescriptor.hueRed),
                               infoWindow: const InfoWindow(title: 'Fim'),
                             ),
-                        },
-                        onMapCreated: (ctrl) {
-                          _mapController = ctrl;
-                          ctrl.setMapStyle(_darkMapStyle);
-                          if (_rota.length > 1) {
-                            // Ajustar câmara para mostrar toda a rota
-                            LatLngBounds bounds = _calcularBounds(_rota);
-                            ctrl.animateCamera(
-                                CameraUpdate.newLatLngBounds(bounds, 50));
-                          }
                         },
                       ),
           ),
