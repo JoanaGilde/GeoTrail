@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../database/database_helper.dart';
 import '../models/trilho.dart';
+import 'atividade_page.dart';
 
 class DetalhesTrilhoPage extends StatelessWidget {
   final Trilho trilho;
@@ -104,9 +106,30 @@ class DetalhesTrilhoPage extends StatelessWidget {
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.play_arrow),
                 label: const Text("Iniciar Trilho"),
-                onPressed: () {
-                  Navigator.pushNamed(context, "/atividade");
+                onPressed: () async {
+                  final db = DatabaseHelper.instance;
+
+                  // 1. Criar nova caminhada
+                  int idCaminhada = await db.insertCaminhada({
+                    'id_trilho': trilho.id,
+                    'id_utilizador': 1, // ou o ID real do utilizador
+                    'data': DateTime.now().toIso8601String(),
+                    'distancia_total': 0.0,
+                    'velocidade_media': 0.0,
+                    'rota': '',
+                    'desnivel_acumulado': 0.0,
+                    'duracao': 0.0,
+                  });
+
+                  // 2. Abrir página de atividade passando o ID
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => AtividadePage(idCaminhada: idCaminhada),
+                    ),
+                  );
                 },
+
               ),
             ),
           ],

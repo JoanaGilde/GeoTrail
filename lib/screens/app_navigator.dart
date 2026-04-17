@@ -19,7 +19,6 @@ class _AppNavigatorState extends State<AppNavigator> {
   final List<Widget> _pages = const [
     InicioPage(),
     TrilhosPage(),
-    AtividadePage(),
     PerfilPage(),
   ];
 

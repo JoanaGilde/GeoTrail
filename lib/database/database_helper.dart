@@ -239,4 +239,16 @@ class DatabaseHelper {
     return result.map((e) => Trilho.fromMap(e)).toList();
   }
 
+  Future<int> update(String table, Map<String, dynamic> values,
+      {String? where, List<Object?>? whereArgs}) async {
+    final db = await database;
+    return await db.update(
+      table,
+      values,
+      where: where,
+      whereArgs: whereArgs,
+    );
+  }
+
+
 }
