@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import '../models/trilho.dart';
 
 
 
@@ -21,9 +22,49 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _createDB,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 3) {
+          await db.insert('trilho', {
+            'nome': 'Trilho da Moreira',
+            'distancia': 5.2,
+            'dificuldade': 'Moderado',
+            'descricao': 'Um trilho com zonas de floresta e escadarias naturais.',
+            'coordenadas': '41.3000,-7.7500',
+            'desnivel': 320
+          });
+
+          await db.insert('trilho', {
+            'nome': 'Trilho da Água',
+            'distancia': 4.8,
+            'dificuldade': 'Fácil',
+            'descricao': 'Trilho com várias quedas de água e zonas húmidas.',
+            'coordenadas': '41.3100,-7.7600',
+            'desnivel': 210
+          });
+
+          await db.insert('trilho', {
+            'nome': 'Trilho do Castelo',
+            'distancia': 3.9,
+            'dificuldade': 'Fácil',
+            'descricao': 'Trilho histórico com passagem por ruínas antigas.',
+            'coordenadas': '41.3200,-7.7700',
+            'desnivel': 150
+          });
+
+          await db.insert('trilho', {
+            'nome': 'Trilho da Serra',
+            'distancia': 7.1,
+            'dificuldade': 'Difícil',
+            'descricao': 'Trilho de montanha com vistas panorâmicas.',
+            'coordenadas': '41.3300,-7.7800',
+            'desnivel': 480
+          });
+        }
+      },
     );
+
   }
   // cria as tabelas da tua app
   Future _createDB(Database db, int version) async {
@@ -190,5 +231,12 @@ class DatabaseHelper {
     };
   }
 
+  Future<List<Trilho>> getTrilhos() async {
+    final db = await database;
+
+    final result = await db.query('trilho');
+
+    return result.map((e) => Trilho.fromMap(e)).toList();
+  }
 
 }
