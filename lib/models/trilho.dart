@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+
 class Trilho {
   final int id;
   final String nome;
@@ -6,6 +9,7 @@ class Trilho {
   final String descricao;
   final String coordenadas;
   final double desnivel;
+  final Uint8List imagem;
 
   Trilho({
     required this.id,
@@ -15,6 +19,7 @@ class Trilho {
     required this.descricao,
     required this.coordenadas,
     required this.desnivel,
+    required this.imagem,
   });
 
   factory Trilho.fromMap(Map<String, dynamic> map) {
@@ -26,6 +31,7 @@ class Trilho {
       descricao: map['descricao'] ?? "",
       coordenadas: map['coordenadas'] ?? "",
       desnivel: map['desnivel']?.toDouble() ?? 0.0,
+      imagem: map['imagem'],
     );
   }
 }

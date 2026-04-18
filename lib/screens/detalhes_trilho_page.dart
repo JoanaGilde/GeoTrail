@@ -25,10 +25,12 @@ class DetalhesTrilhoPage extends StatelessWidget {
               height: 200,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(12),
+                image: DecorationImage(
+                  image: MemoryImage(trilho.imagem),
+                  fit: BoxFit.cover,
+                ),
               ),
-              child: const Icon(Icons.landscape, size: 80),
             ),
 
             const SizedBox(height: 20),

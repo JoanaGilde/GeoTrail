@@ -1,21 +1,18 @@
+import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/trilho.dart';
-
-
 
 class DatabaseHelper {
   static final DatabaseHelper instance = DatabaseHelper._init();
   static Database? _database;
 
   DatabaseHelper._init();
-  // garante que a base de dados abre apenas uma vez
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDB('geotrail.db');
     return _database!;
   }
-  // cria o ficheiro da base de dados no telemóvel
   Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
@@ -86,9 +83,57 @@ class DatabaseHelper {
         dificuldade TEXT,
         descricao TEXT,
         coordenadas TEXT,
-        desnivel REAL
+        desnivel REAL,
+        imagem BLOB
       );
     ''');
+
+    // 🔥 Carregar imagens dos assets
+    final img1 = await _loadImageBytes('assets/trilhos/trilho1.jpg');
+    final img2 = await _loadImageBytes('assets/trilhos/trilho2.jpg');
+    final img3 = await _loadImageBytes('assets/trilhos/trilho3.jpg');
+    final img4 = await _loadImageBytes('assets/trilhos/trilho4.jpg');
+
+    // 🔥 Inserir trilhos com imagens
+    await db.insert('trilho', {
+      'nome': 'Trilho 1',
+      'distancia': 5.2,
+      'dificuldade': 'Fácil',
+      'descricao': '...',
+      'coordenadas': '...',
+      'desnivel': 120,
+      'imagem': img1,
+    });
+
+    await db.insert('trilho', {
+      'nome': 'Trilho 2',
+      'distancia': 7.8,
+      'dificuldade': 'Média',
+      'descricao': '...',
+      'coordenadas': '...',
+      'desnivel': 200,
+      'imagem': img2,
+    });
+
+    await db.insert('trilho', {
+      'nome': 'Trilho 3',
+      'distancia': 10.1,
+      'dificuldade': 'Difícil',
+      'descricao': '...',
+      'coordenadas': '...',
+      'desnivel': 350,
+      'imagem': img3,
+    });
+
+    await db.insert('trilho', {
+      'nome': 'Trilho 4',
+      'distancia': 3.4,
+      'dificuldade': 'Fácil',
+      'descricao': '...',
+      'coordenadas': '...',
+      'desnivel': 80,
+      'imagem': img4,
+    });
 
     await db.execute('''
       CREATE TABLE caminhada (
@@ -248,6 +293,11 @@ class DatabaseHelper {
       where: where,
       whereArgs: whereArgs,
     );
+  }
+
+  Future<Uint8List> _loadImageBytes(String path) async {
+    final data = await rootBundle.load(path);
+    return data.buffer.asUint8List();
   }
 
 

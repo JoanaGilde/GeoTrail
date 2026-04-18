@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 50),
-              
+
               // Grid com os cartões do menu
               Expanded(
                 child: GridView.count(

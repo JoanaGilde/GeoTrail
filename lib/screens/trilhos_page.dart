@@ -45,15 +45,16 @@ class _TrilhosPageState extends State<TrilhosPage> {
             margin: const EdgeInsets.symmetric(
                 horizontal: 12, vertical: 8),
             child: ListTile(
-              leading: Container(
-                width: 70,
-                height: 70,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(8),
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.memory(
+                  t.imagem,        // ← a imagem real do trilho
+                  width: 70,
+                  height: 70,
+                  fit: BoxFit.cover,
                 ),
-                child: const Icon(Icons.landscape, size: 40),
               ),
+
               title: Text(t.nome),
               subtitle: Text(
                 "${t.distancia.toStringAsFixed(2)} km • ${t.dificuldade}",
