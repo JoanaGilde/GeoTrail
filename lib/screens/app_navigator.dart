@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'inicio_page.dart';
 import 'trilhos_page.dart';
-import 'atividade_page.dart';
 import 'perfil_page.dart';
 
 class AppNavigator extends StatefulWidget {
