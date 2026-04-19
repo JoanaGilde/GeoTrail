@@ -103,10 +103,11 @@ void _iniciarCaminhada() async {
 void _pararCaminhada() async {
   await positionSub?.cancel();
   positionSub = null;
+  setState(() => tracking = false);
 
   // Se não houver pontos, ainda assim guardar caminhada
   if (rota.isEmpty) {
-    int caminhadaId = await DatabaseHelper.instance.insertCaminhada({
+    await DatabaseHelper.instance.insertCaminhada({
       'id_trilho': 1,
       'id_utilizador': 1,
       'data': DateTime.now().toString(),
@@ -203,9 +204,9 @@ String _formatarDuracao(dynamic segundos) {
                             ),
                           }
                       : {},
+                    style: Theme.of(context).brightness == Brightness.dark ? _darkMapStyle : null,
                     onMapCreated: (c) {
                       _mapController = c;
-                      c.setMapStyle(_darkMapStyle);
                     },
                   ),
           ),
@@ -261,7 +262,7 @@ String _formatarDuracao(dynamic segundos) {
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: Colors.white.withOpacity(0.8))),
+                      color: Colors.white.withValues(alpha: 0.8))),
             ),
           ),
           const SizedBox(height: 8),
@@ -282,7 +283,7 @@ String _formatarDuracao(dynamic segundos) {
                         margin: const EdgeInsets.only(bottom: 10),
                         child: ListTile(
                           leading: CircleAvatar(
-                            backgroundColor: accent.withOpacity(0.2),
+                            backgroundColor: accent.withValues(alpha: 0.2),
                             child: Icon(Icons.route_rounded, color: accent),
                           ),
                           title: Text(

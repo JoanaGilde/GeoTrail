@@ -213,7 +213,7 @@ class _PerfilPageState extends State<PerfilPage> {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.deepPurpleAccent.withOpacity(0.5),
+                              color: Colors.deepPurpleAccent.withValues(alpha: 0.5),
                               blurRadius: 20,
                               offset: const Offset(0, 6),
                             ),
@@ -328,6 +328,51 @@ class _PerfilPageState extends State<PerfilPage> {
 
                   const SizedBox(height: 32),
 
+                  // --- Conquistas e Gamificação ---
+                  const Text(
+                    'Conquistas',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      children: [
+                        _buildBadge(
+                          'Despertar',
+                          'Primeira corrida!',
+                          Icons.directions_walk_rounded,
+                          ((_metricas['total_caminhadas'] as int?) ?? 0) >= 1,
+                        ),
+                        _buildBadge(
+                          'Andarilho',
+                          '5 Caminhadas no GPS',
+                          Icons.explore_rounded,
+                          ((_metricas['total_caminhadas'] as int?) ?? 0) >= 5,
+                        ),
+                        _buildBadge(
+                          'Maratonista',
+                          'Mais de 42 km totais',
+                          Icons.electric_bolt_rounded,
+                          ((_metricas['distancia_total'] as double?) ?? 0.0) >= 42.0,
+                        ),
+                        _buildBadge(
+                          'Pés de Vento',
+                          'Vel. Média da conta > 6 km/h',
+                          Icons.speed_rounded,
+                          ((_metricas['velocidade_media'] as double?) ?? 0.0) >= 6.0,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
                   // --- Aparência ---
                   const Text(
                     'Aparência',
@@ -399,7 +444,7 @@ class _PerfilPageState extends State<PerfilPage> {
                                                 : null,
                                             boxShadow: isSelected
                                                 ? [BoxShadow(
-                                                    color: paleta.cor.withOpacity(0.6),
+                                                    color: paleta.cor.withValues(alpha: 0.6),
                                                     blurRadius: 10,
                                                     offset: const Offset(0, 3),
                                                   )]
@@ -527,14 +572,65 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
+  Widget _buildBadge(String titulo, String descricao, IconData icon, bool desbloqueado) {
+    final cor = desbloqueado ? Colors.amber : Colors.white24;
+    final bg = desbloqueado ? Colors.amber.withValues(alpha: 0.15) : const Color(0xFF2C2C2C);
+    
+    return Container(
+      width: 140,
+      margin: const EdgeInsets.only(right: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: cor.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: cor.withValues(alpha: 0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: cor, size: 32),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            titulo,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: desbloqueado ? Colors.white : Colors.white54,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            descricao,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: Colors.white54,
+              fontSize: 11,
+            ),
+          ),
+          const SizedBox(height: 8),
+          if (!desbloqueado)
+            const Icon(Icons.lock_outline, color: Colors.white24, size: 16),
+        ],
+      ),
+    );
+  }
+
   Widget _metricaCard(
       String valor, String label, IconData icon, Color cor) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: cor.withOpacity(0.12),
+        color: cor.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: cor.withOpacity(0.25)),
+        border: Border.all(color: cor.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

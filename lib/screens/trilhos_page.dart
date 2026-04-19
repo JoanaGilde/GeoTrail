@@ -47,8 +47,11 @@ class _TrilhosPageState extends State<TrilhosPage> {
             child: ListTile(
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.memory(
-                  t.imagem,        // ← a imagem real do trilho
+                child: Image.asset(
+                  t.nome.contains('Água') ? 'assets/trilhos/trilho2.jpg' :
+                  t.nome.contains('Castelo') ? 'assets/trilhos/trilho3.jpg' :
+                  t.nome.contains('Serra') ? 'assets/trilhos/trilho4.jpg' :
+                  'assets/trilhos/trilho1.jpg',
                   width: 70,
                   height: 70,
                   fit: BoxFit.cover,

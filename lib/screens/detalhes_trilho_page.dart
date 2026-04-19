@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../database/database_helper.dart';
 import '../models/trilho.dart';
 import 'atividade_page.dart';
@@ -27,7 +28,12 @@ class DetalhesTrilhoPage extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 image: DecorationImage(
-                  image: MemoryImage(trilho.imagem),
+                  image: AssetImage(
+                    trilho.nome.contains('Água') ? 'assets/trilhos/trilho2.jpg' :
+                    trilho.nome.contains('Castelo') ? 'assets/trilhos/trilho3.jpg' :
+                    trilho.nome.contains('Serra') ? 'assets/trilhos/trilho4.jpg' :
+                    'assets/trilhos/trilho1.jpg'
+                  ),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -76,18 +82,77 @@ class DetalhesTrilhoPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // DESNÍVEL
-            const Text(
-              "Desnível",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            // DESNÍVEL E GRÁFICO DE ALTIMETRIA
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Altimetria",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "↑ ${trilho.desnivel} m",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.deepPurpleAccent.shade100,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 6),
-            Text(
-              "${trilho.desnivel} m",
-              style: const TextStyle(fontSize: 16),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 180,
+              width: double.infinity,
+              child: LineChart(
+                LineChartData(
+                  gridData: const FlGridData(show: false),
+                  titlesData: FlTitlesData(
+                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 22,
+                        getTitlesWidget: (value, meta) {
+                          if (value == 0) return const Text('0km', style: TextStyle(fontSize: 10, color: Colors.grey));
+                          if (value == trilho.distancia) return Text('${trilho.distancia.toInt()}km', style: const TextStyle(fontSize: 10, color: Colors.grey));
+                          return const SizedBox();
+                        },
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(show: false),
+                  minX: 0,
+                  maxX: trilho.distancia,
+                  minY: 0,
+                  maxY: trilho.desnivel * 1.2,
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: [
+                        const FlSpot(0, 0),
+                        FlSpot(trilho.distancia * 0.2, trilho.desnivel * 0.3),
+                        FlSpot(trilho.distancia * 0.4, trilho.desnivel * 0.8),
+                        FlSpot(trilho.distancia * 0.6, trilho.desnivel * 0.6),
+                        FlSpot(trilho.distancia * 0.8, trilho.desnivel * 1.0),
+                        FlSpot(trilho.distancia, trilho.desnivel * 0.85),
+                      ],
+                      isCurved: true,
+                      color: Colors.deepPurpleAccent,
+                      barWidth: 3,
+                      isStrokeCapRound: true,
+                      dotData: const FlDotData(show: false),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: Colors.deepPurpleAccent.withValues(alpha: 0.2),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
 
             // COORDENADAS
             const Text(
@@ -124,6 +189,7 @@ class DetalhesTrilhoPage extends StatelessWidget {
                   });
 
                   // 2. Abrir página de atividade passando o ID
+                  if (!context.mounted) return;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
