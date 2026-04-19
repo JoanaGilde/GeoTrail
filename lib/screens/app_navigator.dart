@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'inicio_page.dart';
 import 'trilhos_page.dart';
+import 'caminhada_page.dart';
 import 'perfil_page.dart';
 
 class AppNavigator extends StatefulWidget {
@@ -18,6 +19,7 @@ class _AppNavigatorState extends State<AppNavigator> {
   final List<Widget> _pages = const [
     InicioPage(),
     TrilhosPage(),
+    CaminhadaPage(),
     PerfilPage(),
   ];
 

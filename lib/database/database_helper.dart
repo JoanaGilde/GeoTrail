@@ -19,45 +19,43 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 3,
+      version: 6,
       onCreate: _createDB,
       onUpgrade: (db, oldVersion, newVersion) async {
-        if (oldVersion < 3) {
-          await db.insert('trilho', {
-            'nome': 'Trilho da Moreira',
-            'distancia': 5.2,
-            'dificuldade': 'Moderado',
-            'descricao': 'Um trilho com zonas de floresta e escadarias naturais.',
-            'coordenadas': '41.3000,-7.7500',
-            'desnivel': 320
-          });
+        if (oldVersion < 6) {
+          await db.execute('DROP TABLE IF EXISTS pontos_rota');
+          await db.execute('''
+            CREATE TABLE pontos_rota (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              id_caminhada INTEGER,
+              latitude REAL,
+              longitude REAL,
+              timestamp TEXT,
+              FOREIGN KEY (id_caminhada) REFERENCES caminhada(id_caminhada)
+            )
+          ''');
+        }
 
-          await db.insert('trilho', {
-            'nome': 'Trilho da Água',
-            'distancia': 4.8,
-            'dificuldade': 'Fácil',
-            'descricao': 'Trilho com várias quedas de água e zonas húmidas.',
-            'coordenadas': '41.3100,-7.7600',
-            'desnivel': 210
-          });
+        if (oldVersion < 5) {
+          await db.delete('trilho');
 
-          await db.insert('trilho', {
-            'nome': 'Trilho do Castelo',
-            'distancia': 3.9,
-            'dificuldade': 'Fácil',
-            'descricao': 'Trilho histórico com passagem por ruínas antigas.',
-            'coordenadas': '41.3200,-7.7700',
-            'desnivel': 150
-          });
+          // 🔥 Carregar imagens dos assets para inserir trails reais
+          try {
+            final img1 = await _loadImageBytes('assets/trilhos/trilho1.jpg');
+            final img2 = await _loadImageBytes('assets/trilhos/trilho2.jpg');
+            final img3 = await _loadImageBytes('assets/trilhos/trilho3.jpg');
+            final img4 = await _loadImageBytes('assets/trilhos/trilho4.jpg');
 
-          await db.insert('trilho', {
-            'nome': 'Trilho da Serra',
-            'distancia': 7.1,
-            'dificuldade': 'Difícil',
-            'descricao': 'Trilho de montanha com vistas panorâmicas.',
-            'coordenadas': '41.3300,-7.7800',
-            'desnivel': 480
-          });
+            await db.insert('trilho', {'nome': 'Trilho da Moreira', 'distancia': 5.2, 'dificuldade': 'Fácil', 'descricao': 'Um trilho natural...', 'coordenadas': '41.3, -7.7', 'desnivel': 120, 'imagem': img1});
+            await db.insert('trilho', {'nome': 'Trilho da Água', 'distancia': 7.8, 'dificuldade': 'Média', 'descricao': 'Trilho pelo rio...', 'coordenadas': '41.4, -7.8', 'desnivel': 200, 'imagem': img2});
+            await db.insert('trilho', {'nome': 'Trilho do Castelo', 'distancia': 10.1, 'dificuldade': 'Difícil', 'descricao': 'Subida intensa...', 'coordenadas': '41.5, -7.9', 'desnivel': 350, 'imagem': img3});
+            await db.insert('trilho', {'nome': 'Trilho da Serra', 'distancia': 3.4, 'dificuldade': 'Fácil', 'descricao': 'Passeio agradável...', 'coordenadas': '41.6, -7.0', 'desnivel': 80, 'imagem': img4});
+          } catch(e) {
+            await db.insert('trilho', {'nome': 'Trilho da Moreira', 'distancia': 5.2, 'dificuldade': 'Fácil', 'descricao': 'Um trilho natural...', 'coordenadas': '41.3, -7.7', 'desnivel': 120});
+            await db.insert('trilho', {'nome': 'Trilho da Água', 'distancia': 7.8, 'dificuldade': 'Média', 'descricao': 'Trilho pelo rio...', 'coordenadas': '41.4, -7.8', 'desnivel': 200});
+            await db.insert('trilho', {'nome': 'Trilho do Castelo', 'distancia': 10.1, 'dificuldade': 'Difícil', 'descricao': 'Subida intensa...', 'coordenadas': '41.5, -7.9', 'desnivel': 350});
+            await db.insert('trilho', {'nome': 'Trilho da Serra', 'distancia': 3.4, 'dificuldade': 'Fácil', 'descricao': 'Passeio agradável...', 'coordenadas': '41.6, -7.0', 'desnivel': 80});
+          }
         }
       },
     );
@@ -177,11 +175,11 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE pontos_rota (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        caminhada_id INTEGER,
+        id_caminhada INTEGER,
         latitude REAL,
         longitude REAL,
         timestamp TEXT,
-        FOREIGN KEY (caminhada_id) REFERENCES caminhadas(id)
+        FOREIGN KEY (id_caminhada) REFERENCES caminhada(id_caminhada)
       )
     ''');
   }

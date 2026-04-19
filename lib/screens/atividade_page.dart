@@ -10,10 +10,10 @@ class AtividadePage extends StatefulWidget {
   const AtividadePage({super.key, required this.idCaminhada});
 
   @override
-  _AtividadePageState createState() => _AtividadePageState();
+  AtividadePageState createState() => AtividadePageState();
 }
 
-class _AtividadePageState extends State<AtividadePage> {
+class AtividadePageState extends State<AtividadePage> {
   Position? _lastPos;
   StreamSubscription<Position>? _gpsStream;
   double distanciaTotal = 0.0;
@@ -92,6 +92,7 @@ class _AtividadePageState extends State<AtividadePage> {
       whereArgs: [widget.idCaminhada],
     );
 
+    if (!mounted) return;
     Navigator.pop(context);
   }
 

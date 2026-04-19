@@ -99,7 +99,7 @@ class HomePage extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: gradientColors.last.withOpacity(0.4),
+            color: gradientColors.last.withValues(alpha: 0.4),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -109,8 +109,8 @@ class HomePage extends StatelessWidget {
         color: Colors.transparent, // Transparente para deixar ver o gradiente por baixo
         child: InkWell(
           borderRadius: BorderRadius.circular(28),
-          splashColor: Colors.white.withOpacity(0.2),
-          highlightColor: Colors.white.withOpacity(0.1),
+          splashColor: Colors.white.withValues(alpha: 0.2),
+          highlightColor: Colors.white.withValues(alpha: 0.1),
           onTap: () {
             Navigator.push(
               context,
@@ -129,7 +129,7 @@ class HomePage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.25),
+                    color: Colors.white.withValues(alpha: 0.25),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(icon, size: 36, color: Colors.white),

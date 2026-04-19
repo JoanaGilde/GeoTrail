@@ -99,6 +99,7 @@ class _InicioPageState extends State<InicioPage> {
                                 target: _posicaoAtual!,
                                 zoom: 16,
                               ),
+                              style: Theme.of(context).brightness == Brightness.dark ? _darkMapStyle : null,
                               myLocationEnabled: true,
                               myLocationButtonEnabled: false,
                               zoomControlsEnabled: false,
@@ -106,7 +107,6 @@ class _InicioPageState extends State<InicioPage> {
                               onMapCreated: (controller) {
                                 _mapController = controller;
                                 _mapReady = true;
-                                controller.setMapStyle(_darkMapStyle);
                               },
                             ),
                             // Botão centrar
@@ -170,7 +170,7 @@ class _InicioPageState extends State<InicioPage> {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           elevation: 6,
-                          shadowColor: accent.withOpacity(0.4),
+                          shadowColor: accent.withValues(alpha: 0.4),
                         ),
                         onPressed: () => Navigator.push(
                           context,
